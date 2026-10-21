@@ -49,11 +49,13 @@ export default function PositiveWishApp() {
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [activeTheme, setActiveTheme] = useState<AmbientTheme>('cosmic');
   const [greeting, setGreeting] = useState<string>('Welcome');
+  const [todayFormatted, setTodayFormatted] = useState<string>('');
   const [isAnimating, setIsAnimating] = useState<boolean>(false);
 
   // Time-of-day greeting & favorites recovery on mount
   useEffect(() => {
-    const hour = new Date().getHours();
+    const now = new Date();
+    const hour = now.getHours();
     if (hour < 12) {
       setGreeting('Good Morning');
     } else if (hour < 17) {
@@ -61,6 +63,14 @@ export default function PositiveWishApp() {
     } else {
       setGreeting('Good Evening');
     }
+
+    setTodayFormatted(
+      new Intl.DateTimeFormat('en-US', {
+        weekday: 'long',
+        month: 'short',
+        day: 'numeric',
+      }).format(now)
+    );
 
     // Load saved favorites
     try {
@@ -231,12 +241,7 @@ export default function PositiveWishApp() {
     }
   };
 
-  // Format today's date
-  const todayFormatted = new Intl.DateTimeFormat('en-US', {
-    weekday: 'long',
-    month: 'short',
-    day: 'numeric',
-  }).format(new Date());
+
 
   const themeColors = THEME_GRADIENTS[activeTheme];
 
@@ -357,7 +362,8 @@ export default function PositiveWishApp() {
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass-pill text-xs text-white/70 shadow-sm mb-2">
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
             <span>
-              {greeting} • {todayFormatted}
+              {greeting}
+              {todayFormatted ? ` • ${todayFormatted}` : ''}
             </span>
           </div>
 
