@@ -12,6 +12,7 @@ jobs:
         with:
           key: ${{secrets.EC2_DEPLOYMENT_PRIVATE}}
           host: ${{secrets.SERVER_HOST}}
+          username: ${{secrets.SERVER_USERNAME}}
           script: |
             cd ${{ secrets.SERVER_PATH }}
             git fetch --all
