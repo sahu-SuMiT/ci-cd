@@ -11,6 +11,7 @@ jobs:
         uses: appleboy/ssh-action@v0.1.9
         with:
           key: ${{secrets.EC2_DEPLOYMENT_PRIVATE}}
+          host: ${{secrets.SERVER_HOST}}
           script: |
             cd ${{ secrets.SERVER_PATH }}
             git fetch --all
