@@ -1,0 +1,29 @@
+on: [push]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Run and deploy
+        uses: appleboy/ssh-action@v0.1.9
+        with:
+          key:${{EC2_DEPLOYMENT_PRIVATE}}
+          script: |
+            cd ${{ secrets.SERVER_PATH }}
+            git fetch --all
+            git pull
+            npm install --force
+            npm run build
+            if [ -f "package.json" ]; then
+              if pm2 describe "nextjs-website" > /dev/null; then
+                pm2 restart "nextjs-website"
+              else
+                pm2 start --name "nextjs-website" "npm run start -- -p 3001"
+              fi
+              pm2 save
+            else
+              echo "package.json not found. Skipping start/restart."
+            fi
