@@ -10,14 +10,15 @@ jobs:
       - name: Run and deploy
         uses: appleboy/ssh-action@v0.1.9
         with:
-          key:${{EC2_DEPLOYMENT_PRIVATE}}
+          key: ${{secrets.EC2_DEPLOYMENT_PRIVATE}}
           script: |
             cd ${{ secrets.SERVER_PATH }}
             git fetch --all
             git pull
-            npm install --force
-            npm run build
             if [ -f "package.json" ]; then
+              npm install
+              npm run build
+            
               if pm2 describe "nextjs-website" > /dev/null; then
                 pm2 restart "nextjs-website"
               else
